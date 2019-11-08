@@ -145,7 +145,9 @@ public class login extends javax.swing.JFrame {
             {
                 if(user.getText().equals(Main_Class.users.users[i].user) && Main_Class.users.get_hash_pass(pass.getText()).equals(Main_Class.users.users[i].pass))
                 {
-                    System.out.println("usuario correcto");
+                    Drive_Interface login_correct = new Drive_Interface(Main_Class.users.users[i].folders_files, Main_Class.users.users[i].user);
+                    login_correct.setVisible(true);
+                    this.setVisible(false);
                     return;
                 }
             }
