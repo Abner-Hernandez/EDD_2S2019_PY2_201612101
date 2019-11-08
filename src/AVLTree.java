@@ -1,11 +1,6 @@
-import java.awt.Desktop;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
 
 class Node
 {
@@ -38,12 +33,14 @@ class File_
     String name_file;
     String content;
     String timestamp;
+    String owner;
     
-    public File_(String name, String content, String timestamp)
+    public File_(String name, String content, String timestamp, String owner)
     {
         this.name_file = name;
         this.content = content;
         this.timestamp = timestamp;
+        this.owner = owner;
     }
 }
 
@@ -52,10 +49,15 @@ public class AVLTree {
     String txtfile;
     List<File_> files;
     
-    public void insert_file(String name, String content)
+    public void insert_file(String name, String content, String owner)
     {
         Timestamp times = new Timestamp(System.currentTimeMillis());
-        this.files.add(new File_(name, content, times.toString()));
+        this.files.add(new File_(name, content, times.toString(), owner));
+    }
+    
+    public void insert_file(String name, String content, String owner, String timestamp)
+    {
+        this.files.add(new File_(name, content, timestamp, owner));
     }
     
     public void delete_file(String name)
@@ -67,6 +69,24 @@ public class AVLTree {
                 return;
             }
         }
+    }
+    
+    public boolean exists_file(String name)
+    {
+        for (int i = 0 ; i < files.size() ; i++) {
+            if(files.get(i).name_file.equals(name))
+                return true;
+        }
+        return false;
+    }
+    
+    public String get_timestamp(String name)
+    {
+        for (int i = 0 ; i < files.size() ; i++) {
+            if(files.get(i).name_file.equals(name))
+                return files.get(i).timestamp;
+        }
+        return null;
     }
     
     private boolean exist_file(String name)
@@ -102,9 +122,9 @@ public class AVLTree {
     
     public void create_avl()
     {
-        for (File_ file : files) {
+        this.root = null;
+        for (File_ file : files)
             this.insert(file.name_file, file.content, file.timestamp);
-        }
     }
     
     public AVLTree()
@@ -122,34 +142,80 @@ public class AVLTree {
             return 1 + Integer.max(this.calculate_height(node.left), this.calculate_height(node.right));
     }
     
-    private Node simple_rot(Node node, boolean left)
+    private void simple_rot(Node node, boolean left)
     {
         Node aux = new Node();
+        Node side = new Node();
+        Node node_copy = new Node();
         if(!left)
         {
-            aux = node.left;
-            node.left = aux.right;
-            aux.right = node;
+            copy_data_node(aux, node.left);
+            copy_data_node(side, aux.right);
+            
+            if(aux.right != null)
+            {
+                node.left = side;
+                copy_data_node(aux.right, node);
+            }
+            else
+            {
+                node.left = null;
+                copy_data_node(node_copy, node);
+                aux.right = node_copy;
+            }
         }else
         {
-            aux = node.right;
-            node.right = aux.left;
-            aux.left = node;
+            copy_data_node(aux, node.right);
+            copy_data_node(side, aux.left);
+            
+            if(aux.left != null)
+            {
+                node.right = side;
+                copy_data_node(node_copy, node);
+                aux.left = node_copy;
+            }
+            else
+            {
+                node.right = null;
+                copy_data_node(node_copy, node);
+                aux.left = node_copy;
+            }
         }
-        node = aux;
-        return node;
+        copy_data_node(node, aux);
     }
     
-    private Node doubble_rot(Node node, boolean right)
+    private void copy_data_node(Node original, Node copy)
+    {
+        if(copy == null)
+            return;
+        original.content = copy.content;
+        original.name_file = copy.name_file;
+        original.timestamp = copy.timestamp;
+        if(copy.right != null)
+        {
+            original.right = new Node();
+            copy_data_node(original.right, copy.right);
+        }else
+            original.right = null;
+        
+        if(copy.left != null)
+        {
+            original.left = new Node();
+            copy_data_node(original.left, copy.left);
+        }else
+            original.left = null;
+    }
+    
+    private void doubble_rot(Node node, boolean right)
     {
         if(right)
         {
             this.simple_rot(node.right, false);
-            return this.simple_rot(node, true);
+            this.simple_rot(node, true);
         }else
         {
             this.simple_rot(node.left, true);
-            return this.simple_rot(node, false);
+            this.simple_rot(node, false);
         }
     }
     
@@ -158,60 +224,38 @@ public class AVLTree {
         if(root == null)
             this.root = new Node(name_file, content, timestamp);
         else
-            this.insert(this.root, name_file, content, timestamp, null, false);
+            this.insert(this.root, name_file, content, timestamp);
     }
     
-    private void insert(Node pivot, String name_file, String content, String timestamp, Node parent, boolean left)
+    private void insert(Node pivot, String name_file, String content, String timestamp)
     {
         if(pivot.name_file.compareTo(name_file) < 0)
         {
             if(pivot.right == null)
                 pivot.right = new Node(name_file, content, timestamp);
             else
-                this.insert(pivot.right, name_file, content, timestamp, pivot , false);
+                this.insert(pivot.right, name_file, content, timestamp);
             
             if((this.calculate_height(pivot.right) - this.calculate_height(pivot.left)) == 2)
             {
                 if(name_file.compareTo(pivot.right.name_file) > 0)
-                {
-                    if(left)
-                        parent.left = this.simple_rot(pivot, true);
-                    else
-                        parent.right = this.simple_rot(pivot, true);
-                }
+                    this.simple_rot(pivot, true);
                 else
-                {
-                    
-                    if(left)
-                        parent.left = this.doubble_rot(pivot, true);
-                    else
-                        parent.right = this.doubble_rot(pivot, true);
-                }
+                    this.doubble_rot(pivot, true);
             }
         }else if(pivot.name_file.compareTo(name_file) > 0)
         {
             if(pivot.left == null)
                 pivot.left = new Node(name_file, content, timestamp);
             else
-                this.insert(pivot.left, name_file, content, timestamp, pivot, true);
+                this.insert(pivot.left, name_file, content, timestamp);
 
             if((this.calculate_height(pivot.left) - this.calculate_height(pivot.right)) == 2)
             {
-                if(name_file.compareTo(pivot.right.name_file) < 0)
-                {
-                    if(left)
-                        parent.left = this.simple_rot(pivot, false);
-                    else
-                        parent.right = this.simple_rot(pivot, false);
-                }
+                if(name_file.compareTo(pivot.left.name_file) < 0)
+                    this.simple_rot(pivot, false);
                 else
-                {
-                    
-                    if(left)
-                        parent.left = this.doubble_rot(pivot, false);
-                    else
-                        parent.right = this.doubble_rot(pivot, false);
-                }
+                    this.doubble_rot(pivot, false);
             }        
         }
     }
@@ -224,11 +268,18 @@ public class AVLTree {
             txtfile += "node[shape = record, height = 0.5, width = 1]; \n";
             txtfile += "graph[nodesep = 0.5]; \n";
 
-            txtfile += this.root.name_file + "[label= \"  <A0> |";
-            txtfile +=  "Name: " + this.root.name_file + "\\nContent: " + this.root.content + "\\nAltura: " + String.valueOf(this.calculate_height(this.root)) + "\\nFE: " + String.valueOf(this.calculate_height(this.root.right) - this.calculate_height(this.root.left) ) + "\\nTimestamp: " + this.root.timestamp+ " | <A1> \"];\n";
+            int root_height = this.calculate_height(this.root);
+            int root_right = this.calculate_height(this.root.right);
+            int root_left = this.calculate_height(this.root.left);
+
+            
+            txtfile += this.root.name_file.replace('.', '_') + "[label= \"  <A0> |";
+            txtfile +=  "Name: " + this.root.name_file + "\\nContent: " + this.root.content + "\\nAltura: " + String.valueOf(root_height) + "\\nFE: " + String.valueOf(root_right - root_left ) + "\\nTimestamp: " + this.root.timestamp+ " | <A1> \"];\n";
             this.tree_graph(root);
             txtfile += "}";
-            this.save_file(txtfile, "tree");
+            
+            Main_Class.save_file(txtfile, "avl_of_files");
+
         }
     }
     
@@ -238,15 +289,15 @@ public class AVLTree {
         {
             if(node.left != null)
             {
-                txtfile += node.left.name_file + "[label= \"  <A0> |";
+                txtfile += node.left.name_file.replace('.', '_')  + "[label= \"  <A0> |";
                 txtfile += "Name: " + node.left.name_file + "\\nContent: " + node.left.content + "\\nAltura: " + String.valueOf(this.calculate_height(node.left)) + "\\nFE: " + String.valueOf(this.calculate_height(node.left.right) - this.calculate_height(node.left.left) )  + " | <A1> \"];\n";
-                txtfile += node.name_file + ":A0" +" -> "+ node.left.name_file +";\n";
+                txtfile += node.name_file.replace('.', '_')  + ":A0" +" -> "+ node.left.name_file.replace('.', '_')  +";\n";
             }
             if(node.right != null)
             {
-                txtfile += node.right.name_file + "[label= \"  <A0> |";
+                txtfile += node.right.name_file.replace('.', '_')  + "[label= \"  <A0> |";
                 txtfile += "Name: " + node.right.name_file + "\\nContent: " + node.right.content + "\\nAltura: " + String.valueOf(this.calculate_height(node.right)) + "\\nFE: " + String.valueOf(this.calculate_height(node.right.right) - this.calculate_height(node.right.left) )  + " | <A1> \"];\n";
-                txtfile += node.name_file + ":A1" +" -> "+ node.right.name_file +";\n";
+                txtfile += node.name_file.replace('.', '_')  + ":A1" +" -> "+ node.right.name_file.replace('.', '_')  +";\n";
             }
             this.tree_graph(node.left);
             this.tree_graph(node.right);
@@ -346,51 +397,4 @@ public class AVLTree {
         return false;
     }
 
-    /*
-    public void upload_files(String csv)
-    {
-        int ini = 0;
-        String file_name = "", not_inserted = "";
-        for(int i = 0 ; i < csv.length() ; i++)
-        {
-            if(csv.charAt(i) == ',')
-            {
-                file_name = csv.substring(ini,i);
-                ini = i+1;
-            }else if (csv.charAt(i) == '\n')
-            {
-                if(file_name.toLowerCase().equals("archivo"))
-                {
-                    ini = i+1;
-                    file_name = "";
-                    continue;
-                }
-
-                if(this.exist_file(file_name))
-                {
-                    int resp = JOptionPane.showConfirmDialog(null, "¿Want you remplace file?");
-                    if(resp == 1)
-                        this.modify_file(file_name, csv.substring(ini, i));
-                }
-                ini = i+1;
-            }
-        }
-    }
-    */
-
-    private void save_file(String cadena,String name)
-    {
-        try
-        {
-            FileWriter fichero = new FileWriter(name + ".dot");
-            PrintWriter pw = new PrintWriter(fichero);
-            pw.print(cadena);
-            fichero.close(); 
-            Runtime.getRuntime().exec(String.format("dot -Tpng "+ name +".dot -o "+ name +".png"));
-            File file = new File( name +".png" );
-            Desktop.getDesktop().open( file );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

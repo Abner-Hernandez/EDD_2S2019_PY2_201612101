@@ -1,11 +1,4 @@
-
-import java.awt.Desktop;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 class Nodo_Matriz
 {
     Nodo_Matriz up;
@@ -13,6 +6,7 @@ class Nodo_Matriz
     Nodo_Matriz next;
     Nodo_Matriz previous;
     String id;
+    String id_like_node;
     String father;
     String son;
     String value;
@@ -24,13 +18,14 @@ class Nodo_Matriz
         this.next = null;
         this.previous = null;
         this.id = "";
+        this.id_like_node = null;
         this.father = "";
         this.son = "";
         this.value = "";
         this.files = new AVLTree();
     }
     
-    public Nodo_Matriz(String father, String son, String value, String id){
+    public Nodo_Matriz(String father, String son, String value, String id, String id_like_node){
         this.up = null;
         this.down = null;
         this.next = null;
@@ -40,24 +35,32 @@ class Nodo_Matriz
         this.value = value;
         this.files = new AVLTree();
         this.id = id;
+        this.id_like_node = id_like_node;
     }
 }
 
 public class Matriz {
     Nodo_Matriz header;
+    int num_nodo;
+    String user_name;
     
     public Matriz()
     {
         this.header = new Nodo_Matriz();
-        
-        Nodo_Matriz yInsertF = new Nodo_Matriz("", "", "/", "a" + String.valueOf(Main_Class.number_nodo++));
+        this.num_nodo = 0;
+        this.user_name = null;
+    }
+    
+    public void insert_root()
+    {
+        Nodo_Matriz yInsertF = new Nodo_Matriz("", "", "/", "a" + String.valueOf(num_nodo++), null);
+        yInsertF.id_like_node = yInsertF.id;
         yInsertF.up = this.header;
         this.header.down = yInsertF;
         
-        Nodo_Matriz xInsertF = new Nodo_Matriz("", "", "/", "a" + String.valueOf(Main_Class.number_nodo++));
+        Nodo_Matriz xInsertF = new Nodo_Matriz("", "", "/", "a" + String.valueOf(num_nodo++), null);
         xInsertF.previous = this.header;
         this.header.next = xInsertF;
-        
     }
     
     public void insert_folder(ArrayList<String> path)
@@ -76,7 +79,7 @@ public class Matriz {
                     aux_x = aux_x.next;
                 }
 
-                Nodo_Matriz xInsertS = new Nodo_Matriz("", "", path.get(1), "a" + String.valueOf(Main_Class.number_nodo++));
+                Nodo_Matriz xInsertS = new Nodo_Matriz("", "", path.get(1), "a" + String.valueOf(num_nodo++), null);
                 xInsertS.previous = aux_x;
                 aux_x.next = xInsertS;   
 
@@ -93,7 +96,7 @@ public class Matriz {
                     aux_root_x = this.header.down;
                 
 
-                Nodo_Matriz insert = new Nodo_Matriz(path.get(0), path.get(1), "", "a" + String.valueOf(Main_Class.number_nodo++));
+                Nodo_Matriz insert = new Nodo_Matriz(path.get(0), path.get(1), "", "a" + String.valueOf(num_nodo++), null);
                 aux_root_x.next = insert;
                 insert.previous = aux_root_x;
                 xInsertS.down = insert;
@@ -107,13 +110,13 @@ public class Matriz {
                     aux_y = aux_y.down;
                 }
 
-                Nodo_Matriz yInsertS = new Nodo_Matriz(path.get(0), "", path.get(1), "a" + String.valueOf(Main_Class.number_nodo++));
+                Nodo_Matriz yInsertS = new Nodo_Matriz(path.get(0), "", path.get(1), "a" + String.valueOf(num_nodo++), insert.id);
                 yInsertS.up = aux_y;
                 aux_y.down = yInsertS;
 
             }else
             {
-                int number_match = 0, cont = 0;;
+                int number_match = 0, cont = 0;
 
                 Nodo_Matriz aux_y = this.header.down;
                 String father = path.get(cont++);
@@ -137,7 +140,7 @@ public class Matriz {
                             aux_x = aux_x.next;
                         }
 
-                        Nodo_Matriz xInsertS = new Nodo_Matriz("", "", path.get(size-1), "a" + String.valueOf(Main_Class.number_nodo++));
+                        Nodo_Matriz xInsertS = new Nodo_Matriz("", "", path.get(size-1), "a" + String.valueOf(num_nodo++), null);
                         xInsertS.previous = aux_x;
                         aux_x.next = xInsertS;   
 
@@ -154,13 +157,13 @@ public class Matriz {
                             aux_root_x = aux_root_x.next;
                         }
 
-                        Nodo_Matriz insert = new Nodo_Matriz(path.get(size-2), path.get(size-1), "", "a" + String.valueOf(Main_Class.number_nodo++));
+                        Nodo_Matriz insert = new Nodo_Matriz(path.get(size-2), path.get(size-1), "", "a" + String.valueOf(num_nodo++), null);
                         aux_root_x.next = insert;
                         insert.previous = aux_root_x;
                         xInsertS.down = insert;
                         insert.up = xInsertS;
 
-                        Nodo_Matriz yInsertS = new Nodo_Matriz(path.get(size-2), "", path.get(size-1), "a" + String.valueOf(Main_Class.number_nodo++));
+                        Nodo_Matriz yInsertS = new Nodo_Matriz(path.get(size-2), "", path.get(size-1), "a" + String.valueOf(num_nodo++), insert.id);
                         yInsertS.up = aux_y;
 
                         if(aux_y.down != null)
@@ -180,13 +183,13 @@ public class Matriz {
         }
     }
 
-    public void insert_file(ArrayList<String> path, String file, String content)
+    public void insert_file(ArrayList<String> path, String file, String content, String owner)
     {
         int size = path.size();
         
         if(size > 1)
         {
-            int number_match = 0, cont = 0;;
+            int number_match = 0, cont = 0;
             Nodo_Matriz aux_y = this.header.down;
             String father = path.get(cont++);
             String son = path.get(cont);
@@ -209,7 +212,7 @@ public class Matriz {
                     {
                         if(aux_xD.son.equals(path.get(size-1)))
                         {
-                            aux_xD.files.insert_file(file, content);
+                            aux_xD.files.insert_file(file, content, owner);
                             break;
                         }
                         aux_xD = aux_xD.next;
@@ -219,17 +222,27 @@ public class Matriz {
             }
         }else
         {
-            this.header.down.files.insert_file(file, content);
+            this.header.down.files.insert_file(file, content, owner);
         }
 
     }
 
+    public boolean insert_file_shared(String file, String content, String owner, String timestamp)
+    {
+        if(!this.header.down.files.exists_file(file))
+        {
+            this.header.down.files.insert_file(file, content, owner, timestamp);
+            return true;
+        }else
+            return false;
+    }
+    
     public void modify_file(ArrayList<String> path, String file, String content)
     {
         int size = path.size()-1;
         if(size > 1)
         {
-            int number_match = 0, cont = 0;;
+            int number_match = 0, cont = 0;
             Nodo_Matriz aux_y = this.header.down;
             String father = path.get(cont++);
             String son = path.get(cont);
@@ -272,7 +285,7 @@ public class Matriz {
         int size = path.size()-1;
         if(size > 1)
         {
-            int number_match = 0, cont = 0;;
+            int number_match = 0, cont = 0;
             Nodo_Matriz aux_y = this.header.down;
             String father = path.get(cont++);
             String son = path.get(cont);
@@ -315,7 +328,7 @@ public class Matriz {
         int size = path.size()-1;
         if(size > 1)
         {
-            int number_match = 0, cont = 0;;
+            int number_match = 0, cont = 0;
             Nodo_Matriz aux_y = this.header.down;
             String father = path.get(cont++);
             String son = path.get(cont);
@@ -354,10 +367,54 @@ public class Matriz {
         return null;
     }
     
+    public String get_timestamp(ArrayList<String> path, String file)
+    {
+        int size = path.size()-1;
+        if(size > 1)
+        {
+            int number_match = 0, cont = 0;
+            Nodo_Matriz aux_y = this.header.down;
+            String father = path.get(cont++);
+            String son = path.get(cont);
+            while(aux_y != null)
+            {
+                if(father.equals(aux_y.father) && son.equals(aux_y.value))
+                {
+                    if(cont < size-2)
+                    {
+                        father = path.get(cont++);
+                        son = path.get(cont);
+                    }
+                    number_match++;
+                }
+
+                if(number_match == size -2)
+                {
+                    Nodo_Matriz aux_xD = aux_y.next;
+                    while(aux_xD != null)
+                    {
+                        if(aux_xD.son.equals(path.get(size-1)))
+                        {
+                            return aux_xD.files.get_timestamp(file);
+                        }
+                        aux_xD = aux_xD.next;
+                    }
+                }
+                aux_y = aux_y.down;
+            }
+        }
+        else
+        {
+            return this.header.down.files.get_timestamp(file);
+        }
+
+        return null;
+    }
+    
     public void deleteFolder(ArrayList<String> path, int number_folders_del)
     {
         int size = path.size();
-        int number_match = 0, cont = 0;;
+        int number_match = 0, cont = 0;
 
         Nodo_Matriz aux_y = this.header.down;
         String father = path.get(cont++);
@@ -424,42 +481,14 @@ public class Matriz {
 
                 aux_y = aux_y.down;
             }
-        }else
-        {
-
-            Nodo_Matriz aux_xD = aux_y.next;
-            while(aux_xD != null)
-            {
-                if(aux_xD.son.equals(path.get(size-1)))
-                {
-                    if(aux_xD.up.next != null)
-                        aux_xD.up.next.previous = aux_xD.up.previous;
-                    aux_xD.up.previous.next = aux_xD.up.next;
-                }
-                aux_xD = aux_xD.next;
-            }
-            while(aux_y != null)
-            {
-                if(father.equals(aux_y.father) && son.equals(aux_y.value))
-                {
-                    Nodo_Matriz aux_y2 = aux_y.next;
-                    while(aux_y2 != null)
-                    {
-
-                        aux_xD = aux_xD.next;
-                    }
-                }
-                aux_y = aux_y.down;
-            }
         }
-
     }
 
     public void modify_folder(ArrayList<String> path, String name)
     {
         int size = path.size();
-        int number_match = 0, cont = 0;;
-
+        
+        int number_match = 0, cont = 0;
         Nodo_Matriz aux_y = this.header.down;
         String father = path.get(cont++);
         String son = path.get(cont);
@@ -507,7 +536,53 @@ public class Matriz {
         }
     }
 
-    public void graficar(String postGraph)
+    public void create_avl_tree(ArrayList<String> path)
+    {
+        int size = path.size();
+        
+        if(size > 1)
+        {
+            int number_match = 0, cont = 0;
+            Nodo_Matriz aux_y = this.header.down;
+            String father = path.get(cont++);
+            String son = path.get(cont);
+            while(aux_y != null)
+            {
+                if(father.equals(aux_y.father) && son.equals(aux_y.value))
+                {
+                    if(cont < size-1)
+                    {
+                        father = path.get(cont++);
+                        son = path.get(cont);
+                    }
+                    number_match++;
+                }
+
+                if(number_match == size -2)
+                {
+                    Nodo_Matriz aux_xD = aux_y.next;
+                    while(aux_xD != null)
+                    {
+                        if(aux_xD.son.equals(path.get(size-1)))
+                        {
+                            aux_xD.files.create_avl();
+                            aux_xD.files.tree_graph();
+                            break;
+                        }
+
+                        aux_xD = aux_xD.next;
+                    }
+                }
+                aux_y = aux_y.down;
+            }
+        }else
+        {
+            this.header.down.files.create_avl();
+            this.header.down.files.tree_graph();
+        }
+    }
+    
+    public void graph_matrix()
     {
         if(this.header.next != null || this.header.down != null)
         {
@@ -568,7 +643,7 @@ public class Matriz {
                     aux = aux.next;
                 }
 
-                //graficarRecursivo(auxDown.next,txtArchivo);
+                //graph_matrixRecursivo(auxDown.next,txtArchivo);
 
 
                 if(auxDown.next != null)
@@ -622,27 +697,44 @@ public class Matriz {
                 auxDown = auxDown.down;
             }
 
-
             txtArchivo += "\n}";
 
-            save_file(txtArchivo , postGraph);
+            Main_Class.save_file(txtArchivo , "matrix_adj");
         }
     }
 
-    private void save_file(String cadena,String name)
+    public void graph()
     {
-        try
+        if(header.next != null)
         {
-            FileWriter fichero = new FileWriter(name + ".dot");
-            PrintWriter pw = new PrintWriter(fichero);
-            pw.print(cadena);
-            fichero.close(); 
-            Runtime.getRuntime().exec(String.format("dot -Tpng "+ name +".dot -o "+ name +".png"));
-            File file = new File( name +".png" );
-            Desktop.getDesktop().open( file );
-        } catch (Exception e) {
-            e.printStackTrace();
+            String txtArchivo;
+            txtArchivo ="";
+            txtArchivo += "digraph Mass{\n";
+            txtArchivo += "node[shape = oval, height = 1, width = 1]; \n";
+
+            Nodo_Matriz aux = this.header.down;
+            txtArchivo += aux.id + "[label= \"";
+            txtArchivo += aux.value +"\"";
+            txtArchivo += "];\n";
+            while(aux != null)
+            {
+                if(aux.next != null)
+                {
+                    Nodo_Matriz aux_x = aux.next;
+                    while(aux_x != null)
+                    {
+                        txtArchivo += aux_x.id + "[label= \"";
+                        txtArchivo += aux_x.son +"\"";
+                        txtArchivo += "];\n";
+                        txtArchivo += aux.id_like_node+" -> "+ aux_x.id + "; \n";
+                        aux_x = aux_x.next;
+                    }
+                }
+                
+                aux = aux.down;
+            }
+            txtArchivo += "}";
+            Main_Class.save_file(txtArchivo, "graph");
         }
     }
-
 }
