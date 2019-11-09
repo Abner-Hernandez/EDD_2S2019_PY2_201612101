@@ -733,7 +733,7 @@ public class Drive_Interface extends javax.swing.JFrame {
     }
     
 
-    
+    /*
     public static void main(String args[]) {
 
         try {
@@ -761,6 +761,7 @@ public class Drive_Interface extends javax.swing.JFrame {
             }
         });
     }
+    */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton create_file;

@@ -15,18 +15,40 @@ public class Users {
         int nextPrime = this.calculate_prime(this.users.length);
         User aux_User[] = new User[nextPrime];
 
-        for (User user : aux_User) {
+        for (User user : users) {
+            if(user == null)
+                continue;
             int pos = this.funtion_hash(this.codify(user.user));
+            int no_loop = 0, index = 0;
+            int last_index[] = new int[4];
             while(true)
             {
-                if(pos > users.length)
-                    pos = get_new_index(pos, users.length);
-                if(this.users[pos] != null)
+                if(pos > aux_User.length)
                 {
+                    pos = get_new_index(pos, aux_User.length);
+                    if (loop_index(last_index, pos))
+                        no_loop++;
+                }
+                if(aux_User[pos] != null)
+                {
+                    if (index < 4)
+                        last_index[index++] = pos;
+                    else
+                        index = 0;
+
                     pos *= pos;
+
+                    if (loop_index(last_index, pos))
+                        no_loop++;
+                    if(no_loop > 5)
+                    {
+                        no_loop = 0;
+                        pos += 1;
+                    }
                 }else
                 {
-                    users[pos] = user;
+                    aux_User[pos] = user;
+                    last_index = new int[4];
                     break;
                 }
             }
@@ -97,34 +119,64 @@ public class Users {
     private void redimension_users()
     {
         int count = 0;
-        for(int i = 0 ; i > this.users.length ; i++)
+        for(int i = 0 ; i < this.users.length ; i++)
         {
             if(users[i] != null)
                 count++;
         }
-        if((count / users.length) > 0.7)
+        float occupied = ((float)count / users.length);
+        if( occupied > 0.7)
             this.reziseUsers();
     }
 
     public void insertUser(String user_name, String pass)
     {
+        int no_loop = 0, index = 0;
+        int last_index[] = new int[4];
         int pos = this.funtion_hash(this.codify(user_name));
         while(true)
         {
             if(pos > users.length)
+            {
                 pos = get_new_index(pos, users.length);
+                if (loop_index(last_index, pos))
+                    no_loop++;
+            }
             if(this.users[pos] != null)
             {
+                if (index < 4)
+                    last_index[index++] = pos;
+                else
+                    index = 0;
+                
                 pos *= pos;
+                
+                if (loop_index(last_index, pos))
+                    no_loop++;
+                if(no_loop > 5)
+                {
+                    no_loop = 0;
+                    pos += 1;
+                }
             }else
             {
                 users[pos] = new User(user_name, this.get_hash_pass(pass));
+                last_index = new int[4];
                 this.redimension_users();
                 break;
             }
         }
     }
 
+    private boolean loop_index(int pos_prev[], int actual_pos)
+    {
+        for (int i : pos_prev) {
+            if(actual_pos == i)
+                return true;
+        }
+        return false;
+    }
+    
     public boolean search_user(String user)
     {
             for (User user1 : this.users) {
@@ -158,7 +210,7 @@ public class Users {
                     not_inserted += "The User: " + user + "was not created because the name already exists.\n";
                 else
                 {
-                    if(csv.substring(ini, i).length() < 8)
+                    if(csv.substring(ini, i-1).length() < 8)
                         not_inserted += "The User: " + user + "was not created because password must be greater than 8 characters.\n";
                     else
                         this.insertUser(user, csv.substring(ini, i));

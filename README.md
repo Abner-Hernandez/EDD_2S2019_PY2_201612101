@@ -2,5 +2,4 @@
 Proyect 2 EDD
 
 #Description
-Ghraphic interface finished..
-implementing action button
+Test Hash Table...

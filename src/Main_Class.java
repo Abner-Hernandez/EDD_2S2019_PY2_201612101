@@ -89,7 +89,7 @@ public class Main_Class {
             fichero.close(); 
             Runtime.getRuntime().exec(String.format("dot -Tjpg " + folder + "\\" + name +".dot -o "+ folder + "\\" + name +".jpg"));
             try {
-                Thread.sleep(100);
+                Thread.sleep(200);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Main_Class.class.getName()).log(Level.SEVERE, null, ex);
             }
