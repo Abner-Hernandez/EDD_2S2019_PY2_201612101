@@ -1,0 +1,93 @@
+digraph Mass{
+rankdir = TB; 
+node[shape = rectangle, height = 1, width = 1]; 
+graph[nodesep = 0.5]; 
+header[shape = record  label= "Header"]; 
+a1[label= "/"];
+a2[label= "as1"];
+a5[label= "a2"];
+a8[label= "a3"];
+a11[label= "a4"];
+a14[label= "a5"];
+a17[label= "a6"];
+a23[label= "s2"];
+a26[label= "s3"];
+a29[label= "s5"];
+a32[label= "x2"];
+header -> a1 [constraint=false, dir="both"]; 
+a0[label= "/"];
+a4[label= "as1"];
+a7[label= "a2"];
+a16[label= "a5"];
+a10[label= "a3"];
+a25[label= "s2"];
+a34[label= "x2"];
+a13[label= "a4"];
+a19[label= "a6"];
+a31[label= "s5"];
+a28[label= "s3"];
+header -> a0 [dir="both"]; 
+a0 -> a4 [dir="both"]; 
+a3[label= "//as1"];
+a6[label= "//a2"];
+a3 -> a6 [ constraint=false, dir="both"]; 
+a9[label= "//a3"];
+a6 -> a9 [ constraint=false, dir="both"]; 
+a12[label= "//a4"];
+a9 -> a12 [ constraint=false, dir="both"]; 
+a0 -> a3 [constraint=false, dir="both"]; 
+a4 -> a7 [dir="both"]; 
+a7 -> a16 [dir="both"]; 
+a15[label= "a2/a5"];
+a7 -> a15 [constraint=false, dir="both"]; 
+a16 -> a10 [dir="both"]; 
+a10 -> a25 [dir="both"]; 
+a24[label= "a3/s2"];
+a10 -> a24 [constraint=false, dir="both"]; 
+a25 -> a34 [dir="both"]; 
+a33[label= "s2/x2"];
+a25 -> a33 [constraint=false, dir="both"]; 
+a34 -> a13 [dir="both"]; 
+a13 -> a19 [dir="both"]; 
+a18[label= "a4/a6"];
+a13 -> a18 [constraint=false, dir="both"]; 
+a19 -> a31 [dir="both"]; 
+a27[label= "a6/s3"];
+a30[label= "a6/s5"];
+a27 -> a30 [ constraint=false, dir="both"]; 
+a19 -> a27 [constraint=false, dir="both"]; 
+a31 -> a28 [dir="both"]; 
+a1 -> a2 [dir="both"]; 
+a2 -> a3 [dir="both"]; 
+a2 -> a5 [dir="both"]; 
+a5 -> a6 [dir="both"]; 
+a5 -> a8 [dir="both"]; 
+a8 -> a9 [dir="both"]; 
+a8 -> a11 [dir="both"]; 
+a11 -> a12 [dir="both"]; 
+a11 -> a14 [dir="both"]; 
+a14 -> a15 [dir="both"]; 
+a14 -> a17 [dir="both"]; 
+a17 -> a18 [dir="both"]; 
+a17 -> a23 [dir="both"]; 
+a23 -> a24 [dir="both"]; 
+a23 -> a26 [dir="both"]; 
+a26 -> a27 [dir="both"]; 
+a26 -> a29 [dir="both"]; 
+a29 -> a30 [dir="both"]; 
+a29 -> a32 [dir="both"]; 
+a32 -> a33 [dir="both"]; 
+{ rank=same; header a1 a2 a5 a8 a11 a14 a17 a23 a26 a29 a32 }
+{ rank=same;a0 a3 a6 a9 a12 }
+{ rank=same;a4 }
+{ rank=same;a7 a15 }
+{ rank=same;a16 }
+{ rank=same;a10 a24 }
+{ rank=same;a25 a33 }
+{ rank=same;a34 }
+{ rank=same;a13 a18 }
+{ rank=same;a19 a27 a30 }
+{ rank=same;a31 }
+{ rank=same;a28 }
+
+}

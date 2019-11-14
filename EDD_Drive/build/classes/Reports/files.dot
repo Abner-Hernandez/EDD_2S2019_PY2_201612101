@@ -1,0 +1,15 @@
+digraph Mass{
+node[shape = record, height = 0.5, width = 1]; 
+graph[nodesep = 0.5]; 
+header_cc[label= "  <A0> |Name: header.cc\nContent: implementacion header\nAltura: 2\nFE: 0\nTimestamp: 2019-11-06 13:32:48.465 | <A1> "];
+data_txt[label= "  <A0> |Name: data.txt\nContent: all datas\nAltura: 1\nFE: 0 | <A1> "];
+header_cc:A0 -> data_txt;
+header_h[label= "  <A0> |Name: header.h\nContent: contenido header\nAltura: 1\nFE: 1 | <A1> "];
+header_cc:A1 -> header_h;
+backup_txt[label= "  <A0> |Name: backup.txt\nContent: content backup\nAltura: 0\nFE: 0 | <A1> "];
+data_txt:A0 -> backup_txt;
+datas_txt[label= "  <A0> |Name: datas.txt\nContent: new content\nAltura: 0\nFE: 0 | <A1> "];
+data_txt:A1 -> datas_txt;
+table_java[label= "  <A0> |Name: table.java\nContent: objeto table\nAltura: 0\nFE: 0 | <A1> "];
+header_h:A1 -> table_java;
+}

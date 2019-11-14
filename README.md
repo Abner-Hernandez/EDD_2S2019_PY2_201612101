@@ -5,3 +5,5 @@ Proyect 2 EDD
 
 Finished Proyect
 src: you can find the java's classes
+EDD_Drive: you can find the Netbeans proyect
+Exec: you can find the executable program
