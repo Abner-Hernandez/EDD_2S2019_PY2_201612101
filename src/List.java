@@ -1,42 +1,36 @@
-import java.sql.Timestamp;
-
-/**
- *
- * @author abner
- */
-class Nodo
+class Node_List<T>
 {
-    Nodo next, previous;
-    String description, timestamp, user_modify;
+    Node_List next, previous;
+    T data;
     
-    Nodo(String description, String user_modify)
+    Node_List(T name)
     {
         this.previous = null;
         this.next = null;
-        Timestamp times = new Timestamp(System.currentTimeMillis());
-        this.timestamp = times.toString();
-        this.description = description;
-        this.user_modify = user_modify;
+        this.data = name;
     }
 }
 
-public class List {
-    Nodo first;
+public class List<T> {
+    Node_List first;
+    int size;
     
     public List()
     {
         this.first = null;
+        this.size = 0 ;
     }
     
-    public void insert(String description, String user_modify)
+    public void add(T data)
     {
-        Nodo nuevo = new Nodo(description,user_modify);
+        Node_List<T> nuevo = new Node_List<>(data);
 
         if(this.first == null)
         {
             this.first = nuevo;
             this.first.next = this.first;
             this.first.previous = this.first;
+            size++;
         }
         else
         {
@@ -46,34 +40,30 @@ public class List {
                 this.first.previous = nuevo;
                 nuevo.next = this.first;
                 nuevo.previous = this.first;
+                size++;
             }else
             {
                 nuevo.previous = this.first.previous;
                 this.first.previous.next = nuevo;
                 nuevo.next = this.first;
                 this.first.previous = nuevo;
+                size++;
             }
         }
     }
     
-    public void graph_table()
+    public T get(int index)
     {
-        String txtfile = "digraph Mass{\n";
-        txtfile += "aHtmlTable [\nshape=plaintext\ncolor=black\n";
-        txtfile += "label=<\n";
-        
-        txtfile += "<table border='1' cellborder='1'>\n";
-        txtfile += "<tr><td>user</td><td>Description</td></tr>\n";
-
-        Nodo aux = this.first;
-        
+        Node_List<T> aux = first;
+        int cont = 0 ;
         do{
-            txtfile += "<tr><td>" + aux.user_modify + "</td><td>Description:" + aux.description+ " Timestamp:" + aux.timestamp + "</td></tr>\n"; 
+            if(cont == index)
+                return aux.data;
+            cont++;
             aux = aux.next;
-        }while(aux != first);
-        txtfile += "</table>\n";
-        txtfile += "\n>\n];\n}";
-        Main_Class.save_file(txtfile, "users");
-
+        }while(aux != this.first);
+        
+        return aux.data;
     }
+    
 }

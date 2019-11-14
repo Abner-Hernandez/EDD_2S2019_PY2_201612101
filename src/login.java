@@ -1,4 +1,4 @@
-
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class login extends javax.swing.JFrame {
@@ -147,7 +147,8 @@ public class login extends javax.swing.JFrame {
                 {
                     Drive_Interface login_correct = new Drive_Interface(Main_Class.users.users[i].folders_files, Main_Class.users.users[i].user);
                     login_correct.setVisible(true);
-                    this.setVisible(false);
+                    login_correct.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    this.dispose();
                     return;
                 }
             }

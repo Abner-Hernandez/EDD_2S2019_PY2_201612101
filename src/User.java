@@ -1,10 +1,12 @@
 import java.sql.Timestamp;
+import javax.swing.tree.TreeModel;
 
 public class User {
     public String user;
     public String pass;
     public String timestamp;
     public Matriz folders_files;
+    public TreeModel model;
     
     public User(String user, String pass)
     {

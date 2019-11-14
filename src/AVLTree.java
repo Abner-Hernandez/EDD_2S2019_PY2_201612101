@@ -1,12 +1,11 @@
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 class Node
 {
     String name_file;
     String content;
     String timestamp;
+    String owner;
     Node left;
     Node right;
     public Node()
@@ -16,13 +15,15 @@ class Node
         this.timestamp = null;
         this.left = null;
         this.right = null;
+        this.owner = null;
     }
     
-    public Node(String name_file, String content, String timestamp)
+    public Node(String name_file, String content, String timestamp, String owner)
     {
         this.name_file = name_file;
         this.content = content;
         this.timestamp = timestamp;
+        this.owner = owner;
         this.left = null;
         this.right = null;
     }
@@ -49,6 +50,20 @@ public class AVLTree {
     String txtfile;
     List<File_> files;
     
+    public List<String> get_files()
+    {
+        List<String> files_names = new List<>();
+        
+        Node_List<File_> aux = files.first;
+        
+        do
+        {
+            files_names.add(aux.data.name_file);
+        }while(aux != files.first);
+        
+        return files_names;
+    }
+    
     public void insert_file(String name, String content, String owner)
     {
         Timestamp times = new Timestamp(System.currentTimeMillis());
@@ -62,76 +77,108 @@ public class AVLTree {
     
     public void delete_file(String name)
     {
-        for (int i = 0 ; i < files.size() ; i++) {
-            if(files.get(i).name_file.equals(name))
+        Node_List<File_> aux = files.first;
+        
+        do
+        {
+            if(name.equals(aux.data.name_file))
             {
-                files.remove(i);
-                return;
+                if(aux == files.first && aux.next == files.first)
+                {
+                    files = new List<File_>();
+                    files.size--;
+                }
+                else
+                {
+                    aux.previous.next = aux.next;
+                    aux.next.previous = aux.previous;
+                    files.size--;
+                    if(aux == files.first)
+                    {
+                        files.first = aux.next;
+                    }
+                }
+                
             }
-        }
+            aux = aux.next;
+        }while(aux != files.first);
     }
     
     public boolean exists_file(String name)
     {
-        for (int i = 0 ; i < files.size() ; i++) {
-            if(files.get(i).name_file.equals(name))
+        if(files.size == 0)
+            return false;
+        
+        Node_List<File_> aux = files.first;
+        
+        do
+        {
+            if(name.equals(aux.data.name_file))
                 return true;
-        }
+            aux = aux.next;
+        }while(aux != files.first);
         return false;
     }
     
     public String get_timestamp(String name)
     {
-        for (int i = 0 ; i < files.size() ; i++) {
-            if(files.get(i).name_file.equals(name))
-                return files.get(i).timestamp;
-        }
+        Node_List<File_> aux = files.first;
+        
+        do
+        {
+            if(name.equals(aux.data.name_file))
+                return aux.data.timestamp;
+            aux = aux.next;
+        }while(aux != files.first);
         return null;
     }
     
-    private boolean exist_file(String name)
+    public void modify_file(String name, String new_content, String new_name)
     {
-        for (int i = 0 ; i < files.size() ; i++) {
-            if(files.get(i).name_file.equals(name))
-              return true;
-        }
-        return false;
-    }
-    
-    public void modify_file(String name, String new_content)
-    {
-        for (int i = 0 ; i < files.size() ; i++) {
-            if(files.get(i).name_file.equals(name))
+        Node_List<File_> aux = files.first;
+        
+        do
+        {
+            if(name.equals(aux.data.name_file))
             {
-                files.get(i).content = new_content;
-                return;
+                aux.data.content = new_content;
+                aux.data.name_file = new_name;
             }
-        }
+            aux = aux.next;
+        }while(aux != files.first);
     }
     
     public String get_content(String name)
     {
-        for (int i = 0 ; i < files.size() ; i++) {
-            if(files.get(i).name_file.equals(name))
-            {
-                return files.get(i).content;
-            }
-        }
+        Node_List<File_> aux = files.first;
+        
+        do
+        {
+            if(name.equals(aux.data.name_file))
+                return aux.data.content;
+            aux = aux.next;
+        }while(aux != files.first);
         return null;
     }
     
     public void create_avl()
     {
         this.root = null;
-        for (File_ file : files)
-            this.insert(file.name_file, file.content, file.timestamp);
+        this.txtfile = "";
+        Node_List<File_> aux = files.first;
+        
+        do
+        {
+            this.insert(aux.data.name_file, aux.data.content, aux.data.timestamp, aux.data.owner);
+            aux = aux.next;
+        }while(aux != files.first);
     }
     
     public AVLTree()
     {
         this.root = null;
         this.txtfile = "";
-        this.files = new ArrayList<>();
+        this.files = new List<>();
     }
     
     private int calculate_height(Node node)
@@ -219,22 +266,22 @@ public class AVLTree {
         }
     }
     
-    private void insert(String name_file, String content, String timestamp)
+    private void insert(String name_file, String content, String timestamp, String owner)
     {
         if(root == null)
-            this.root = new Node(name_file, content, timestamp);
+            this.root = new Node(name_file, content, timestamp, owner);
         else
-            this.insert(this.root, name_file, content, timestamp);
+            this.insert(this.root, name_file, content, timestamp, owner);
     }
     
-    private void insert(Node pivot, String name_file, String content, String timestamp)
+    private void insert(Node pivot, String name_file, String content, String timestamp, String owner)
     {
         if(pivot.name_file.compareTo(name_file) < 0)
         {
             if(pivot.right == null)
-                pivot.right = new Node(name_file, content, timestamp);
+                pivot.right = new Node(name_file, content, timestamp, owner);
             else
-                this.insert(pivot.right, name_file, content, timestamp);
+                this.insert(pivot.right, name_file, content, timestamp, owner);
             
             if((this.calculate_height(pivot.right) - this.calculate_height(pivot.left)) == 2)
             {
@@ -246,9 +293,9 @@ public class AVLTree {
         }else if(pivot.name_file.compareTo(name_file) > 0)
         {
             if(pivot.left == null)
-                pivot.left = new Node(name_file, content, timestamp);
+                pivot.left = new Node(name_file, content, timestamp, owner);
             else
-                this.insert(pivot.left, name_file, content, timestamp);
+                this.insert(pivot.left, name_file, content, timestamp, owner);
 
             if((this.calculate_height(pivot.left) - this.calculate_height(pivot.right)) == 2)
             {
@@ -274,7 +321,7 @@ public class AVLTree {
 
             
             txtfile += this.root.name_file.replace('.', '_') + "[label= \"  <A0> |";
-            txtfile +=  "Name: " + this.root.name_file + "\\nContent: " + this.root.content + "\\nAltura: " + String.valueOf(root_height) + "\\nFE: " + String.valueOf(root_right - root_left ) + "\\nTimestamp: " + this.root.timestamp+ " | <A1> \"];\n";
+            txtfile +=  "Name: " + this.root.name_file + "\\nContent: " + this.root.content + "\\nAltura: " + String.valueOf(root_height) + "\\nFE: " + String.valueOf(root_right - root_left ) + "\\nTimestamp: " + this.root.timestamp+ "\\nOwner: " +this.root.owner + " | <A1> \"];\n";
             this.tree_graph(root);
             txtfile += "}";
             

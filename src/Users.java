@@ -1,6 +1,7 @@
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import javax.swing.JOptionPane;
 
 public class Users {
     User users[];
@@ -211,13 +212,15 @@ public class Users {
                 else
                 {
                     if(csv.substring(ini, i-1).length() < 8)
-                        not_inserted += "The User: " + user + "was not created because password must be greater than 8 characters.\n";
+                        not_inserted += "The User: " + user + " was not created because password must be greater than 8 characters.\n";
                     else
                         this.insertUser(user, csv.substring(ini, i));
                 }       
                 ini = i+1;
             }
         }
+        if(!not_inserted.equals(""))
+            JOptionPane.showMessageDialog(null, not_inserted);
     }
 
     public void graph_table()

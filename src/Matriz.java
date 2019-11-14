@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 class Nodo_Matriz
 {
     Nodo_Matriz up;
@@ -63,12 +62,12 @@ public class Matriz {
         this.header.next = xInsertF;
     }
     
-    public void insert_folder(ArrayList<String> path)
+    public void insert_folder(List<String> path)
     {        
         if (this.header.next != null && this.header.down != null)
         {
             //folder in root
-            int size = path.size();
+            int size = path.size;
             if(size == 2)
             {
                 Nodo_Matriz aux_x = this.header.next;
@@ -183,9 +182,9 @@ public class Matriz {
         }
     }
 
-    public void insert_file(ArrayList<String> path, String file, String content, String owner)
+    public void insert_file(List<String> path, String file, String content, String owner)
     {
-        int size = path.size();
+        int size = path.size;
         
         if(size > 1)
         {
@@ -237,9 +236,9 @@ public class Matriz {
             return false;
     }
     
-    public void modify_file(ArrayList<String> path, String file, String content)
+    public void modify_file(List<String> path, String content, String new_name)
     {
-        int size = path.size()-1;
+        int size = path.size-1;
         if(size > 1)
         {
             int number_match = 0, cont = 0;
@@ -265,7 +264,7 @@ public class Matriz {
                     {
                         if(aux_xD.son.equals(path.get(size-1)))
                         {
-                            aux_xD.files.modify_file(path.get(size), content);
+                            aux_xD.files.modify_file(path.get(size), content, new_name);
                             break;
                         }
                         aux_xD = aux_xD.next;
@@ -275,14 +274,14 @@ public class Matriz {
             }
         }else
         {
-            this.header.down.files.modify_file(path.get(size), content);
+            this.header.down.files.modify_file(path.get(size), content, new_name);
         }
         
     }
 
-    public void delete_file(ArrayList<String> path)
+    public void delete_file(List<String> path)
     {
-        int size = path.size()-1;
+        int size = path.size-1;
         if(size > 1)
         {
             int number_match = 0, cont = 0;
@@ -323,9 +322,9 @@ public class Matriz {
         
     }
     
-    public String get_content_file(ArrayList<String> path, String file)
+    public String get_content_file(List<String> path, String file)
     {
-        int size = path.size()-1;
+        int size = path.size-1;
         if(size > 1)
         {
             int number_match = 0, cont = 0;
@@ -367,9 +366,9 @@ public class Matriz {
         return null;
     }
     
-    public String get_timestamp(ArrayList<String> path, String file)
+    public String get_timestamp(List<String> path, String file)
     {
-        int size = path.size()-1;
+        int size = path.size-1;
         if(size > 1)
         {
             int number_match = 0, cont = 0;
@@ -411,9 +410,9 @@ public class Matriz {
         return null;
     }
     
-    public void deleteFolder(ArrayList<String> path, int number_folders_del)
+    public void deleteFolder(List<String> path, int number_folders_del)
     {
-        int size = path.size();
+        int size = path.size;
         int number_match = 0, cont = 0;
 
         Nodo_Matriz aux_y = this.header.down;
@@ -484,9 +483,9 @@ public class Matriz {
         }
     }
 
-    public void modify_folder(ArrayList<String> path, String name)
+    public void modify_folder(List<String> path, String name)
     {
-        int size = path.size();
+        int size = path.size;
         
         int number_match = 0, cont = 0;
         Nodo_Matriz aux_y = this.header.down;
@@ -536,9 +535,9 @@ public class Matriz {
         }
     }
 
-    public void create_avl_tree(ArrayList<String> path)
+    public void create_avl_tree(List<String> path)
     {
-        int size = path.size();
+        int size = path.size;
         
         if(size > 1)
         {
