@@ -59,20 +59,19 @@ public class Stack {
     public void graph_table()
     {
         String txtfile = "digraph Mass{\n";
-        txtfile += "aHtmlTable [\nshape=plaintext\ncolor=black\n";
-        txtfile += "label=<\n";
+        txtfile += "rankdir = LR;";
         
-        txtfile += "<table border='1' cellborder='1'>\n";
-        txtfile += "<tr><td>user</td><td>Description</td></tr>\n";
+        txtfile += "node[shape = record , height = 0.5, width = 1]; ";
 
         Nodo aux = this.first;
-        
+        txtfile += "node1[label= \"User:" + aux.user_modify + " Description:" + aux.description+ "\\nTimestamp:" + aux.timestamp + ""; 
+            aux = aux.next;
         do{
-            txtfile += "<tr><td>" + aux.user_modify + "</td><td>Description:" + aux.description+ " Timestamp:" + aux.timestamp + "</td></tr>\n"; 
+            txtfile += "|User:" + aux.user_modify + " Description:" + aux.description+ "\\nTimestamp:" + aux.timestamp + ""; 
             aux = aux.next;
         }while(aux != first);
-        txtfile += "</table>\n";
-        txtfile += "\n>\n];\n}";
+        txtfile += "\"];";
+        txtfile += "node2[label= \"The last change made by the user is inserted last\\nbut is extracted first. LIFO\"];\n}";
         Main_Class.save_file(txtfile, "binnacle");
 
     }

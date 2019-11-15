@@ -1,6 +1,12 @@
 digraph Mass{
 node[shape = oval, height = 1, width = 1]; 
 a0[label= "/"];
-a3[label= "a1"];
+a3[label= "aa"];
 a0 -> a3; 
+a9[label= "sd"];
+a0 -> a9; 
+a12[label= "er"];
+a0 -> a12; 
+a6[label= "ssd"];
+a3 -> a6; 
 }
