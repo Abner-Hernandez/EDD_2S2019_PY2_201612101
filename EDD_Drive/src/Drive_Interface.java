@@ -636,7 +636,10 @@ public class Drive_Interface extends javax.swing.JFrame {
         int index = report_combobox.getSelectedIndex();
         switch (index) {
             case 0: // Hash table
-                Main_Class.users.graph_table();
+                if(!this.user_name.equals("Admin"))
+                    JOptionPane.showMessageDialog(null, "You need to be an admin user");
+                else
+                    Main_Class.users.graph_table();
                 break;
             case 1: //graph
                 this.folders_files.graph();

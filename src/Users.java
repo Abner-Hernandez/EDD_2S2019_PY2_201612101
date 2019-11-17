@@ -214,7 +214,7 @@ public class Users {
                     if(csv.substring(ini, i-1).length() < 8)
                         not_inserted += "The User: " + user + " was not created because password must be greater than 8 characters.\n";
                     else
-                        this.insertUser(user, csv.substring(ini, i));
+                        this.insertUser(user, csv.substring(ini, i-1));
                 }       
                 ini = i+1;
             }

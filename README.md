@@ -2,6 +2,7 @@
 Proyect 2 EDD
 
 #Description
+validated, only user Admin generate hash table
 
 Finished Proyect
 src: you can find the java's classes
